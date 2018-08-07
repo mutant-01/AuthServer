@@ -2,6 +2,16 @@ import os
 from flask import Flask
 from logging.config import dictConfig
 import sys
+from playhouse.flask_utils import FlaskDB
+from playhouse.db_url import connect
+
+# lazy extensions
+db = connect(
+    os.environ.get(
+        "DATABASE_URI", "postgres://postgres@postgres:5432/auth"
+    ),
+)
+db_wrapper = FlaskDB(database=db)
 
 
 def create_app(extra_configs: dict=None) -> Flask:
@@ -15,6 +25,9 @@ def create_app(extra_configs: dict=None) -> Flask:
     level = os.environ.get("LOG_LEVEL", default='INFO').upper()
     prefix = os.environ.get("LOG_PREFIX", default="AuthServer")
     set_logging(level=level, prefix=prefix)
+
+    # peewee
+    db_wrapper.init_app(app)
 
     if extra_configs is not None:
         app.config.update(extra_configs)
