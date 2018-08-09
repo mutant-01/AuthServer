@@ -49,3 +49,26 @@ def get_user_by_user_pass(username, password):
     if tuple_result is None:
         return tuple_result
     return {"id": tuple_result[0], "roles": tuple_result[1]}
+
+
+def get_resources_by_roles(roles: set, resources: set) -> list:
+    """
+
+    :return: resources allowed by provided roles
+    :raises TypeError: if either of roles or resources is empty.
+    """
+    if len(roles) < 1:
+        raise TypeError("empty roles")
+    if len(resources) < 1:
+        raise TypeError("empty resources")
+    result = db_wrapper.database.execute_sql(
+        "SELECT array_agg(resources.path) "
+        "FROM resource_roles INNER JOIN resources ON (resource_roles.resource_id=resources.id) "
+        "WHERE resources.path IN ({resources}) AND role_id IN ({roles})".format(
+            resources="'" + "','".join(resources) + "'",
+            roles=','.join(map(str, roles))
+        )
+    ).fetchone()
+    if result[0] is None:
+        return []
+    return result[0]
