@@ -1,6 +1,6 @@
 from logging import getLogger
 from flask import Blueprint, request
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_raw_jwt
 from marshmallow import ValidationError
 from auth_server.serializers.auth_serializers import TokenInput, TokenOutput
 from auth_server.user_manager.local_user_manager import LocalUserManager
@@ -34,3 +34,12 @@ def token():
         # user_from_db is a python dictionary object that has 'username' and 'access' keys
         access_token = create_access_token(identity=user_from_db)
         return output_schema.dumps({"token": access_token}), 200
+
+
+@auth_bp.route('/revoke', methods=['POST'])
+@jwt_required
+def revoke():
+    blacklist = user_blacklist_class()
+    blacklist.persist_token_in_blacklist(get_raw_jwt()['jti'])
+    return "", 204
+

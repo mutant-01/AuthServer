@@ -48,6 +48,11 @@ def create_app(extra_configs: dict=None) -> Flask:
     # peewee
     db_wrapper.init_app(app)
 
+    # redis config
+    app.config["REDIS_HOST"] = os.environ.get("REDIS_HOST", "redis")
+    app.config["REDIS_PORT"] = int(os.environ.get("REDIS_PORT", 6379))
+    app.config["REDIS_BLACKLIST"] = os.environ.get("REDIS.GENERAL", "blacklist")
+
     if extra_configs is not None:
         app.config.update(extra_configs)
 
