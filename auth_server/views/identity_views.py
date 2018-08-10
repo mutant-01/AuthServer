@@ -1,6 +1,6 @@
 from flask_jwt_extended import jwt_required
-from auth_server.models.auth_model import Users, Roles
-from auth_server.serializers.identity_serializers import UserSerializer, RoleSerializer
+from auth_server.models.auth_model import Users, Roles, Resources
+from auth_server.serializers.identity_serializers import UserSerializer, RoleSerializer, ResourceSerializer
 from auth_server.views.base_views import BasicCrudView
 
 
@@ -16,3 +16,10 @@ class RolesView(BasicCrudView):
 
     model = Roles
     serializer = RoleSerializer
+
+
+class ResourcesView(BasicCrudView):
+    decorators = [jwt_required]
+
+    model = Resources
+    serializer = ResourceSerializer
