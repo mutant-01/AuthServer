@@ -64,6 +64,8 @@ def create_app(extra_configs: dict=None) -> Flask:
     # methodViews
     from auth_server.views.identity_views import UsersView
     register_methodview(app, UsersView, "users")
+    from auth_server.views.identity_views import RolesView
+    register_methodview(app, RolesView, "roles")
 
     return app
 

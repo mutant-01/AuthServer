@@ -11,3 +11,9 @@ class UserSerializer(Schema):
     def hash_password(self, data):
         data["password"] = hash_password(data["password"])
         return data
+
+
+class RoleSerializer(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str(validate=validate.Length(max=256), required=True)
+    description = fields.Str()
