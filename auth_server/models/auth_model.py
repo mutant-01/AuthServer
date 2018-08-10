@@ -1,4 +1,4 @@
-from peewee import CharField, ForeignKeyField, DateTimeField
+from peewee import CharField, ForeignKeyField, DateTimeField, TextField
 from auth_server import db_wrapper
 
 
@@ -13,6 +13,9 @@ class Users(db_wrapper.Model):
 class Roles(db_wrapper.Model):
     class Meta:
         table_name = 'roles'
+
+    name = CharField(max_length=256, null=False, unique=True)
+    description = TextField(null=True)
 
 
 class UserRoles(db_wrapper.Model):
