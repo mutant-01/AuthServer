@@ -3,6 +3,7 @@ from datetime import timedelta
 from flask import Flask
 from logging.config import dictConfig
 import sys
+from flask.views import MethodView
 from flask_jwt_extended import JWTManager
 from playhouse.flask_utils import FlaskDB
 from playhouse.db_url import connect
@@ -59,6 +60,10 @@ def create_app(extra_configs: dict=None) -> Flask:
     # blueprints
     from auth_server.views.auth_views import auth_bp
     app.register_blueprint(auth_bp)
+
+    # methodViews
+    from auth_server.views.identity_views import UsersView
+    register_methodview(app, UsersView, "users")
 
     return app
 
