@@ -2,6 +2,7 @@ from flask import jsonify
 from auth_server import jwt
 from datetime import datetime
 from auth_server.serializers.auth_serializers import Claims
+from auth_server.utils.blacklist import UserBlackList
 
 
 @jwt.user_claims_loader
@@ -21,3 +22,10 @@ def invalid_token(e):
         'status': 401,
         'msg': 'The token is invalid'
     }), 401
+
+
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    jti = decrypted_token['jti']
+    blacklist = UserBlackList()
+    return blacklist.token_in_blacklist(jti)
