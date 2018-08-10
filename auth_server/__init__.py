@@ -82,3 +82,35 @@ def set_logging(level='INFO', prefix=''):
         }
     })
 
+
+def register_methodview(app: Flask, m_view: MethodView, path: str, url_prefix=''):
+    """Registers new MethodView to flask app
+
+    All HTTP verbs are registered by default one should implement all of them(GET, POST, PUT, DELETE) and return 405
+    if there is no need for the specific verb.
+    :param app: the flask application instance in which the method view should be registered in.
+    :param m_view: the MethodView class that should be registered.
+    :param path: the relative path to the endpoint(relative to url_prefix arg)
+    :param url_prefix: prefix to be prepended to the path arg
+    """
+    view_func = m_view.as_view(path.replace('/', ''))
+    if url_prefix and not url_prefix.startswith('/'):
+        url_prefix = '/' + url_prefix
+    if not path.startswith('/'):
+        path = '/' + path
+    app.add_url_rule(
+        '{}{}'.format(url_prefix, path),
+        defaults={'id': None},
+        view_func=view_func,
+        methods=['GET', ]
+    )
+    app.add_url_rule(
+        '{}{}'.format(url_prefix, path),
+        view_func=view_func,
+        methods=['POST', ]
+    )
+    app.add_url_rule(
+        '{}{}/<string:id>'.format(url_prefix, path),
+        view_func=view_func,
+        methods=['GET', 'PUT', 'DELETE', 'PATCH']
+    )
