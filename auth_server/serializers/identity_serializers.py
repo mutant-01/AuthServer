@@ -2,6 +2,10 @@ from marshmallow import Schema, fields, validate, post_load
 from auth_server.utils.password import hash_password
 
 
+class IdSerializer(Schema):
+    id = fields.Int(required=True)
+
+
 class UserSerializer(Schema):
     id = fields.Int(dump_only=True)
     username = fields.Str(validate=validate.Length(max=128, min=1), required=True)

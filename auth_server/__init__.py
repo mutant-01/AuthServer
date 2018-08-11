@@ -67,8 +67,9 @@ def create_app(extra_configs: dict=None) -> Flask:
     from auth_server.views.identity_views import RolesView
     register_methodview(app, RolesView, "roles")
     from auth_server.views.identity_views import ResourcesView
-
     register_methodview(app, ResourcesView, "resources")
+    from auth_server.views.identity_views import UserRolesView
+    register_methodview(app, UserRolesView, "roles", url_prefix='/users/<string:base_id>')
     return app
 
 
@@ -102,7 +103,7 @@ def register_methodview(app: Flask, m_view: MethodView, path: str, url_prefix=''
     :param path: the relative path to the endpoint(relative to url_prefix arg)
     :param url_prefix: prefix to be prepended to the path arg
     """
-    view_func = m_view.as_view(path.replace('/', ''))
+    view_func = m_view.as_view(url_prefix.replace('/', '') + path.replace('/', ''))
     if url_prefix and not url_prefix.startswith('/'):
         url_prefix = '/' + url_prefix
     if not path.startswith('/'):
