@@ -72,6 +72,9 @@ def create_app(extra_configs: dict=None) -> Flask:
     register_methodview(app, UserRolesView, "roles", url_prefix='/users/<string:base_id>')
     from auth_server.views.identity_views import RoleUsersView
     register_methodview(app, RoleUsersView, "users", url_prefix='/roles/<string:base_id>')
+    from auth_server.views.identity_views import RoleResourcesView
+    register_methodview(app, RoleResourcesView, "resources", url_prefix='/roles/<string:base_id>')
+
     return app
 
 
