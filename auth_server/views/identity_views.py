@@ -59,3 +59,15 @@ class RoleResourcesView(ManyManySubResource):
     fields = ['id', 'path']
 
     serializer = ResourceSerializer
+
+
+class ResourceRolesView(ManyManySubResource):
+    base_table = 'resources'
+    relation_table = 'resource_roles'
+    relation_model = ResourceRoles
+    relation_key_to_base = 'resource_id'
+    relation_key_to_sub = 'role_id'
+    sub_table = 'roles'
+    fields = ['id', 'name', 'description']
+
+    serializer = ResourceSerializer
