@@ -35,3 +35,15 @@ class UserRolesView(ManyManySubResource):
     fields = ['id', 'name', 'description']
 
     serializer = RoleSerializer
+
+
+class RoleUsersView(ManyManySubResource):
+    base_table = 'roles'
+    relation_table = 'user_roles'
+    relation_model = UserRoles
+    relation_key_to_base = 'role_id'
+    relation_key_to_sub = 'user_id'
+    sub_table = 'users'
+    fields = ['id', 'username']
+
+    serializer = UserSerializer
