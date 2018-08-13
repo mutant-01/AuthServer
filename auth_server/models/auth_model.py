@@ -8,6 +8,8 @@ class Users(db_wrapper.Model):
 
     username = CharField(max_length=128, null=False, index=True, unique=True)  # todo it should be a hash index
     password = CharField(max_length=256, null=False)
+    display_name = CharField(max_length=128, null=True)  # todo create another table for profile info
+    avatar = TextField(null=True)
 
 
 class Roles(db_wrapper.Model):
