@@ -120,3 +120,16 @@ def get_one_many_many_as_sub(base_table, sub_table, relation_table, key_to_base,
     if result is None:
         return {}
     return {k: v for k, v in zip(fields, result)}
+
+
+def get_user_resources_by_roles(roles: list):
+    if len(roles) < 1:
+        raise TypeError("empty roles list")
+    results = db_wrapper.database.execute_sql(
+        "select  distinct(resources.path) from resource_roles "
+        "inner join resources on (resource_roles.resource_id=resources.id) "
+        "where resource_roles.role_id in ({roles});".format(
+            roles=",".join(map(str, roles))
+        )
+    ).fetchall()
+    return [r[0] for r in results]

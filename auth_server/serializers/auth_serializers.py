@@ -37,3 +37,7 @@ class AuthorizeInput(StrictSchema):
 class AuthorizeOutput(Schema):
     token = fields.Str(required=True)
     resources = fields.Dict(values=fields.Bool(), keys=fields.Str())
+
+
+class UserResourcesOutput(Schema):
+    resources = fields.List(fields.Str())
