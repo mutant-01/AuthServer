@@ -60,6 +60,8 @@ def create_app(extra_configs: dict=None) -> Flask:
     # blueprints
     from auth_server.views.auth_views import auth_bp
     app.register_blueprint(auth_bp)
+    from auth_server.views.identity_views import identity_bp
+    app.register_blueprint(identity_bp)
 
     # methodViews
     from auth_server.views.identity_views import UsersView

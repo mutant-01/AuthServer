@@ -1,4 +1,5 @@
-from peewee import CharField, ForeignKeyField, TextField, CompositeKey
+from logging import getLogger
+from peewee import CharField, ForeignKeyField, TextField, CompositeKey, DoesNotExist
 from auth_server import db_wrapper
 
 
@@ -10,6 +11,16 @@ class Users(db_wrapper.Model):
     password = CharField(max_length=256, null=False)
     display_name = CharField(max_length=128, null=True)  # todo create another table for profile info
     avatar = TextField(null=True)
+
+    @classmethod
+    def get_info_by_id(cls, id):
+        try:
+            user = cls.select(cls.username, cls.display_name, cls.avatar).where(cls.id == id)[0]
+        except IndexError as e:
+            getLogger().exception(e)
+            getLogger().error("user id '{}' does not exists")
+            raise DoesNotExist
+        return {"username": user.username, "display_name": user.display_name, "avatar": user.avatar}
 
 
 class Roles(db_wrapper.Model):

@@ -1,7 +1,13 @@
+from flask import Blueprint
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from peewee import DoesNotExist
+from auth_server.config import url_prefix
 from auth_server.models.auth_model import Users, Roles, Resources, UserRoles, ResourceRoles
 from auth_server.serializers.identity_serializers import UserSerializer, RoleSerializer, ResourceSerializer
 from auth_server.utils.jwt import access_required
 from auth_server.views.base_views import BasicCrudView, ManyManySubResource
+
+identity_bp = Blueprint('identity', __name__)
 
 
 class UsersView(BasicCrudView):
@@ -79,3 +85,13 @@ class ResourceRolesView(ManyManySubResource):
     fields = ['id', 'name', 'description']
 
     serializer = ResourceSerializer
+
+
+@identity_bp.route('/user_info', methods=['GET'])
+@jwt_required
+def get_user_info():
+    id = get_jwt_identity()
+    try:
+        return UserSerializer().dumps(Users.get_info_by_id(id)), 200
+    except DoesNotExist:
+        return "resource does not exists anymore", 404
