@@ -15,7 +15,10 @@ class UserSerializer(Schema):
 
     @post_load
     def hash_password(self, data):
-        data["password"] = hash_password(data["password"])
+        try:
+            data["password"] = hash_password(data["password"])
+        except KeyError:
+            pass
         return data
 
 
