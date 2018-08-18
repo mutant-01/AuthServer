@@ -14,6 +14,7 @@ spec.definition("token-input", schema=auth_serializers.TokenInput)
 spec.definition("token-output", schema=auth_serializers.TokenOutput)
 spec.definition("authorize-input", schema=auth_serializers.AuthorizeInput)
 spec.definition("token-output", schema=auth_serializers.AuthorizeOutput)
+spec.definition("user-resources-output", schema=auth_serializers.UserResourcesOutput)
 
 # identity serializers
 spec.definition("id-schema", schema=identity_serializers.IdSerializer)
