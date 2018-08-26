@@ -15,8 +15,8 @@ identity_bp = Blueprint('identity', __name__)
 
 class UsersView(BasicCrudView):
     resource_names = [
-        url_prefix + ':users:r',
-        url_prefix + ':users:w'
+        url_prefix[1:] + ':users:r',
+        url_prefix[1:] + ':users:w'
     ]
     decorators = [access_required(resource_names)]
 
@@ -26,8 +26,8 @@ class UsersView(BasicCrudView):
 
 class RolesView(BasicCrudView):
     resource_names = [
-        url_prefix + ':roles:r',
-        url_prefix + ':roles:w'
+        url_prefix[1:] + ':roles:r',
+        url_prefix[1:] + ':roles:w'
     ]
     decorators = [access_required(resource_names)]
 
@@ -37,8 +37,8 @@ class RolesView(BasicCrudView):
 
 class ResourcesView(BasicCrudView):
     resource_names = [
-        url_prefix + ':resources:r',
-        url_prefix + ':resources:w'
+        url_prefix[1:] + ':resources:r',
+        url_prefix[1:] + ':resources:w'
     ]
     decorators = [access_required(resource_names)]
 
@@ -48,9 +48,9 @@ class ResourcesView(BasicCrudView):
 
 class UserRolesView(ManyManySubResource):
     resource_names = [
-        url_prefix + ':users:r',
-        url_prefix + ':users:w',
-        url_prefix + ':roles:r',
+        url_prefix[1:] + ':users:r',
+        url_prefix[1:] + ':users:w',
+        url_prefix[1:] + ':roles:r',
     ]
     decorators = [access_required(resource_names)]
 
@@ -67,9 +67,9 @@ class UserRolesView(ManyManySubResource):
 
 class RoleUsersView(ManyManySubResource):
     resource_names = [
-        url_prefix + ':roles:r',
-        url_prefix + ':users:w',
-        url_prefix + ':users:r',
+        url_prefix[1:] + ':roles:r',
+        url_prefix[1:] + ':users:w',
+        url_prefix[1:] + ':users:r',
     ]
     decorators = [access_required(resource_names)]
 
@@ -86,9 +86,9 @@ class RoleUsersView(ManyManySubResource):
 
 class RoleResourcesView(ManyManySubResource):
     resource_names = [
-        url_prefix + ':roles:r',
-        url_prefix + ':roles:w',
-        url_prefix + ':resources:r',
+        url_prefix[1:] + ':roles:r',
+        url_prefix[1:] + ':roles:w',
+        url_prefix[1:] + ':resources:r',
     ]
     decorators = [access_required(resource_names)]
 
@@ -105,9 +105,9 @@ class RoleResourcesView(ManyManySubResource):
 
 class ResourceRolesView(ManyManySubResource):
     resource_names = [
-        url_prefix + ':resources:r',
-        url_prefix + ':resources:w',
-        url_prefix + ':roles:r',
+        url_prefix[1:] + ':resources:r',
+        url_prefix[1:] + ':resources:w',
+        url_prefix[1:] + ':roles:r',
     ]
     decorators = [access_required(resource_names)]
 
