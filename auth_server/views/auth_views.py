@@ -13,6 +13,7 @@ from auth_server.user_manager.local_user_manager import LocalUserManager
 from auth_server.utils.blacklist import UserBlackList
 from auth_server.utils.view_utils import json_or_400
 
+
 auth_bp = Blueprint('auth', __name__)
 
 user_manger_class = LocalUserManager
@@ -82,6 +83,12 @@ def authorize():
             getLogger().exception(e)
             getLogger().error("jwt claims verification failed: {}".format(in_data["token"]))
             return "jwt claims verification failed", 422
+
+        # check if token in revoked blacklist
+        blacklist = user_blacklist_class()
+        if blacklist.token_in_blacklist(jwt_data["jti"]):
+            getLogger().info(" authorize: token in revoke black list: {}".format(in_data))
+            return "token in black list", 401
 
         try:
             roles = jwt_data["user_claims"]["roles"]
