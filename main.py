@@ -1,8 +1,8 @@
-from auth_server.config import url_prefix
+from auth_server import config
 from auth_server import create_app
 
 
-class PrefixMiddleware(object):
+class PrefixMiddleware:
 
     def __init__(self, application, prefix=''):
         self.app = application
@@ -19,7 +19,5 @@ class PrefixMiddleware(object):
             return ["Resource not found".encode()]
 
 
-if not url_prefix.startswith("/"):
-    url_prefix = "/" + url_prefix
 app = create_app()
-app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=url_prefix)
+app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=config.url_prefix)
