@@ -130,7 +130,7 @@ class ManyManySubResource(MethodView):
                 self.relation_model.insert(**data).execute()
             except IntegrityError as e:
                 getLogger().exception(e)
-                return "Resource already exists", 409
+                return "Resource already exists or system constraint", 409
             return "", 204
 
     def delete(self, base_id, id):
