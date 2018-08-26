@@ -14,28 +14,45 @@ identity_bp = Blueprint('identity', __name__)
 
 
 class UsersView(BasicCrudView):
-    decorators = [access_required(['users-access'])]
+    resource_names = [
+        url_prefix + ':users:r',
+        url_prefix + ':users:w'
+    ]
+    decorators = [access_required(resource_names)]
 
     model = Users
     serializer = UserSerializer
 
 
 class RolesView(BasicCrudView):
-    decorators = [access_required(['roles-access'])]
+    resource_names = [
+        url_prefix + ':roles:r',
+        url_prefix + ':roles:w'
+    ]
+    decorators = [access_required(resource_names)]
 
     model = Roles
     serializer = RoleSerializer
 
 
 class ResourcesView(BasicCrudView):
-    decorators = [access_required(['resources-access'])]
+    resource_names = [
+        url_prefix + ':resources:r',
+        url_prefix + ':resources:w'
+    ]
+    decorators = [access_required(resource_names)]
 
     model = Resources
     serializer = ResourceSerializer
 
 
 class UserRolesView(ManyManySubResource):
-    decorators = [access_required(['users-access', 'roles-access'])]
+    resource_names = [
+        url_prefix + ':users:r',
+        url_prefix + ':users:w',
+        url_prefix + ':roles:r',
+    ]
+    decorators = [access_required(resource_names)]
 
     base_table = 'users'
     relation_table = 'user_roles'
@@ -49,7 +66,12 @@ class UserRolesView(ManyManySubResource):
 
 
 class RoleUsersView(ManyManySubResource):
-    decorators = [access_required(['users-access', 'roles-access'])]
+    resource_names = [
+        url_prefix + ':roles:r',
+        url_prefix + ':users:w',
+        url_prefix + ':users:r',
+    ]
+    decorators = [access_required(resource_names)]
 
     base_table = 'roles'
     relation_table = 'user_roles'
@@ -63,7 +85,12 @@ class RoleUsersView(ManyManySubResource):
 
 
 class RoleResourcesView(ManyManySubResource):
-    decorators = [access_required(['roles-access', 'resources-access'])]
+    resource_names = [
+        url_prefix + ':roles:r',
+        url_prefix + ':roles:w',
+        url_prefix + ':resources:r',
+    ]
+    decorators = [access_required(resource_names)]
 
     base_table = 'roles'
     relation_table = 'resource_roles'
@@ -77,7 +104,12 @@ class RoleResourcesView(ManyManySubResource):
 
 
 class ResourceRolesView(ManyManySubResource):
-    decorators = [access_required(['resources-access', 'roles-access'])]
+    resource_names = [
+        url_prefix + ':resources:r',
+        url_prefix + ':resources:w',
+        url_prefix + ':roles:r',
+    ]
+    decorators = [access_required(resource_names)]
 
     base_table = 'resources'
     relation_table = 'resource_roles'

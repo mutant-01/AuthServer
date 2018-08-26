@@ -2,6 +2,9 @@ import argparse
 from auth_server import create_app, db_wrapper
 from auth_server.models.auth_model import Users, Roles, UserRoles, Resources, ResourceRoles
 from auth_server.utils.password import hash_password
+from auth_server.views.identity_views import (
+    UsersView, ResourcesView, RolesView
+)
 
 
 def parse_input():
@@ -36,26 +39,14 @@ if __name__ == '__main__':
         print("The UserRoles for admin user already exists")
 
     # create resources
-    r, created = Resources.get_or_create(path='users-access')
-    if not created:
-        print("The 'users-access' resource already exists")
+    for view in [
+        UsersView, ResourcesView, RolesView
+    ]:
+        for resource_name in view.resource_names:
+            r, created = Resources.get_or_create(path=resource_name)
+            if not created:
+                print("The '{}' resource already exists".format(resource_name))
 
-    _, created = ResourceRoles.get_or_create(role_id=admin_role.id, resource_id=r.id)
-    if not created:
-        print("The ResourceRole for 'users-access' already exists")
-
-    r, created = Resources.get_or_create(path='roles-access')
-    if not created:
-        print("The 'roles-access' resource already exists")
-
-    _, created = ResourceRoles.get_or_create(role_id=admin_role.id, resource_id=r.id)
-    if not created:
-        print("The ResourceRole for 'roles-access' already exists")
-
-    r, _ = Resources.get_or_create(path='resources-access')
-    if not created:
-        print("The 'resources-access' resource already exists")
-
-    ResourceRoles.get_or_create(role_id=admin_role.id, resource_id=r.id)
-    if not created:
-        print("The ResourceRole for 'resources-access' already exists")
+            _, created = ResourceRoles.get_or_create(role_id=admin_role.id, resource_id=r.id)
+            if not created:
+                print("The ResourceRole for '{},{}' already exists".format(r.id, admin_role.id))
