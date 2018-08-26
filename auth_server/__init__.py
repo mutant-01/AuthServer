@@ -1,12 +1,14 @@
 import os
 from datetime import timedelta
-from flask import Flask
+from flask import Flask, send_from_directory
 from logging.config import dictConfig
 import sys
 from flask.views import MethodView
 from flask_jwt_extended import JWTManager
+from flask_swagger_ui import get_swaggerui_blueprint
 from playhouse.flask_utils import FlaskDB
 from playhouse.db_url import connect
+from auth_server import config
 
 
 # lazy extensions
@@ -56,6 +58,9 @@ def create_app(extra_configs: dict=None) -> Flask:
 
     if extra_configs is not None:
         app.config.update(extra_configs)
+
+    # add swagger ui
+    set_api_doc(app)
 
     # blueprints
     from auth_server.views.auth_views import auth_bp
@@ -133,3 +138,17 @@ def register_methodview(app: Flask, m_view: MethodView, path: str, url_prefix=''
         view_func=view_func,
         methods=['GET', 'PUT', 'DELETE', 'PATCH']
     )
+
+
+def set_api_doc(app: Flask):
+    api_yaml_url = config.url_prefix + '/api_doc_file'
+    api_doc = config.url_prefix + "/api_docs"
+    swaggerui_blueprint = get_swaggerui_blueprint(
+        api_doc,
+        api_yaml_url
+    )
+    app.register_blueprint(swaggerui_blueprint, url_prefix=api_doc)
+
+    @app.route(api_yaml_url)
+    def api_doc():
+        return send_from_directory('static', 'OAS.yaml')
