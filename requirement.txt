@@ -1,6 +1,7 @@
 apispec==0.39.0
 click==6.7
 Flask==1.0.2
+Flask-Cors==3.0.6
 Flask-JWT-Extended==3.12.1
 flask-swagger-ui==3.18.0
 itsdangerous==0.24

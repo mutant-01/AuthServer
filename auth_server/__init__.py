@@ -9,7 +9,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from playhouse.flask_utils import FlaskDB
 from playhouse.db_url import connect
 from auth_server import config
-
+from flask_cors import CORS
 
 # lazy extensions
 db = connect(
@@ -61,6 +61,9 @@ def create_app(extra_configs: dict=None) -> Flask:
 
     # add swagger ui
     set_api_doc(app)
+
+    # CORS
+    CORS(app)
 
     # blueprints
     from auth_server.views.auth_views import auth_bp
