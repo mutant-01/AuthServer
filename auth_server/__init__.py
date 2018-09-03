@@ -144,11 +144,11 @@ def register_methodview(app: Flask, m_view: MethodView, path: str, url_prefix=''
 
 
 def set_api_doc(app: Flask):
-    api_yaml_url = config.url_prefix + '/api_doc_file'
-    api_doc = config.url_prefix + "/api_docs"
+    api_yaml_url = '/api_doc_file'
+    api_doc = "/api_docs"
     swaggerui_blueprint = get_swaggerui_blueprint(
-        api_doc,
-        api_yaml_url
+        config.url_prefix + api_doc,
+        config.url_prefix + api_yaml_url
     )
     app.register_blueprint(swaggerui_blueprint, url_prefix=api_doc)
 
