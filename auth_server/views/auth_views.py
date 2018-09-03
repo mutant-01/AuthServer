@@ -1,5 +1,5 @@
 from logging import getLogger
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_raw_jwt, get_jwt_claims
 from flask_jwt_extended.config import config
 from flask_jwt_extended.exceptions import JWTDecodeError, UserClaimsVerificationError
@@ -7,8 +7,8 @@ from flask_jwt_extended.tokens import decode_jwt
 from flask_jwt_extended.utils import verify_token_claims
 from marshmallow import ValidationError
 from auth_server.models.auth_model import get_user_resources_by_roles
-from auth_server.serializers.auth_serializers import TokenInput, TokenOutput, AuthorizeInput, AuthorizeOutput, \
-    UserResourcesOutput
+from auth_server.serializers.auth_serializers import TokenInput, TokenOutput, AuthorizeInput, AuthorizeOutput
+from auth_server.serializers.identity_serializers import ResourceSerializer
 from auth_server.user_manager.local_user_manager import LocalUserManager
 from auth_server.utils.blacklist import UserBlackList
 from auth_server.utils.view_utils import json_or_400
@@ -113,8 +113,8 @@ def get_user_resources():
         return "invalid token", 401
     else:
         try:
-            return UserResourcesOutput().dumps({"resources": get_user_resources_by_roles(roles)}), 200
+            return ResourceSerializer(exclude=("id", )).dumps(get_user_resources_by_roles(roles), many=True), 200
         except TypeError as e:
             getLogger().exception(e)
             getLogger().error("token '{}' have no roles so have no allowed resources".format(get_raw_jwt()))
-            return UserResourcesOutput().dumps({"resources": []}), 200
+            return jsonify([]), 200

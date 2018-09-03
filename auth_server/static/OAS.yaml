@@ -45,11 +45,11 @@ paths:
         - auth
       responses:
         '200':
-          description: returns list of allowed resources for the user
+          description: returns resources paths and descriptions
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/user-resources-output'
+                $ref: '#/components/schemas/resources-schema'
         '401':
           description: invalid token
           
@@ -564,6 +564,7 @@ components:
       type: object
     resource-schema:
       properties:
+        description: {type: string}
         path: {maxLength: 1024, minLength: 1, type: string}
         id: {format: int32, readOnly: true, type: integer}
       required: [path]

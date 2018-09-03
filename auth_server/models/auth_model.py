@@ -44,7 +44,8 @@ class Resources(db_wrapper.Model):
     class Meta:
         table_name = 'resources'
 
-    path = CharField(max_length=1024, null=False, index=True)  # todo it should be a hash index
+    path = CharField(max_length=1024, null=False, index=True, unique=True)  # todo it should be a hash index
+    description = TextField(null=True)
 
 
 class ResourceRoles(db_wrapper.Model):
@@ -137,10 +138,10 @@ def get_user_resources_by_roles(roles: list):
     if len(roles) < 1:
         raise TypeError("empty roles list")
     results = db_wrapper.database.execute_sql(
-        "select  distinct(resources.path) from resource_roles "
+        "select  distinct(resources.path), resources.description from resource_roles "
         "inner join resources on (resource_roles.resource_id=resources.id) "
         "where resource_roles.role_id in ({roles});".format(
             roles=",".join(map(str, roles))
         )
     ).fetchall()
-    return [r[0] for r in results]
+    return [{"path": r[0], "description": r[1]} for r in results]
