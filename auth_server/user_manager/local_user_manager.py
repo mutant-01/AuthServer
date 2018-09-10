@@ -31,11 +31,15 @@ class LocalUserManager(BaseUserManager):
         """Gets resources and role identifiers and returns a dict of resources/allow(bool) pair"""
         all_resources = set(resources)
         try:
-            allowed_resources = set(get_resources_by_roles(roles=set(roles), resources=all_resources))
+            resource_value_list = get_resources_by_roles(roles=set(roles), resources=all_resources)
         except TypeError as e:
             getLogger().exception(e)
             getLogger().info("roles or resources empty, no resource allowed")
-            allowed_resources = set()
-        result = {r: True for r in allowed_resources}
-        result.update({r: False for r in all_resources - allowed_resources})
+            resource_value_list = []
+        # iterate over allowed resources which is a list of tuples(resource, value)
+        result = {}
+        for r, v in resource_value_list:
+            result[r] = True if v is None else v
+            all_resources.remove(r)
+        result.update({r: False for r in all_resources})
         return result

@@ -566,6 +566,7 @@ components:
       properties:
         description: {type: string}
         path: {maxLength: 1024, minLength: 1, type: string}
+        value: {maxLength: 1024, type: string}
         id: {format: int32, readOnly: true, type: integer}
       required: [path]
       type: object

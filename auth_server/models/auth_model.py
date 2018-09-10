@@ -46,6 +46,7 @@ class Resources(db_wrapper.Model):
 
     path = CharField(max_length=1024, null=False, index=True, unique=True)  # todo it should be a hash index
     description = TextField(null=True)
+    value = CharField(max_length=1024, null=True)
 
 
 class ResourceRoles(db_wrapper.Model):
@@ -74,7 +75,7 @@ def get_user_by_user_pass(username, password):
 def get_resources_by_roles(roles: set, resources: set) -> list:
     """
 
-    :return: resources allowed by provided roles
+    :return: resources and their values allowed by provided roles
     :raises TypeError: if either of roles or resources is empty.
     """
     if len(roles) < 1:
@@ -82,16 +83,14 @@ def get_resources_by_roles(roles: set, resources: set) -> list:
     if len(resources) < 1:
         raise TypeError("empty resources")
     result = db_wrapper.database.execute_sql(
-        "SELECT array_agg(resources.path) "
+        "SELECT DISTINCT resources.path, resources.value "
         "FROM resource_roles INNER JOIN resources ON (resource_roles.resource_id=resources.id) "
         "WHERE resources.path IN ({resources}) AND role_id IN ({roles})".format(
             resources="'" + "','".join(resources) + "'",
             roles=','.join(map(str, roles))
         )
-    ).fetchone()
-    if result[0] is None:
-        return []
-    return result[0]
+    ).fetchall()
+    return list(result)
 
 
 def get_all_many_many_as_sub(base_table, sub_table, relation_table, key_to_base, key_to_sub, base_id, fields):

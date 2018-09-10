@@ -32,3 +32,4 @@ class ResourceSerializer(Schema):
     id = fields.Int(dump_only=True)
     path = fields.Str(validate=validate.Length(max=1024, min=1), required=True)
     description = fields.Str()
+    value = fields.Str(validate=validate.Length(max=1024), required=False)

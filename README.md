@@ -17,6 +17,8 @@ example authorize request:
 ````
 the response to authorize request contains the token in the request and 
 a dictionary the represents which resources are allowed to be used by the token.
+the resources dictionary consists of resources path as keys and resources value as values, 
+if resource value is null, the dictionary value would be True, representing a simple resource access without value.  
 example authorize response:
 ```javascript
 {
