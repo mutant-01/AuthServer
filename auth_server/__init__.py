@@ -6,18 +6,13 @@ import sys
 from flask.views import MethodView
 from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint
-from playhouse.flask_utils import FlaskDB
-from playhouse.db_url import connect
 from auth_server import config
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 
 # lazy extensions
-db = connect(
-    os.environ.get(
-        "DATABASE_URI", "postgres://postgres@postgres:5432/auth"
-    ),
-)
-db_wrapper = FlaskDB(database=db)
+db_wrapper = SQLAlchemy()
+
 jwt = JWTManager()
 
 
@@ -48,8 +43,11 @@ def create_app(extra_configs: dict=None) -> Flask:
     app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
     import auth_server.utils.jwt
 
-    # peewee
-    db_wrapper.init_app(app)
+    # sqlAlchemy
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URI", "postgres://postgres@postgres:5432/auth")
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    global db_wrapper
+    db_wrapper = SQLAlchemy(app)
 
     # redis config
     app.config["REDIS_HOST"] = os.environ.get("REDIS_HOST", "redis")

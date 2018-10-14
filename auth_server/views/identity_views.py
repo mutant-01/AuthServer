@@ -2,9 +2,9 @@ from logging import getLogger
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from marshmallow import ValidationError
-from peewee import DoesNotExist
 from auth_server.config import url_prefix
-from auth_server.models.auth_model import Users, Roles, Resources, UserRoles, ResourceRoles
+from auth_server.models.auth_model import Users, Roles, Resources, user_roles, resource_roles
+from auth_server.models.errors import DoesNotExist
 from auth_server.serializers.identity_serializers import UserSerializer, RoleSerializer, ResourceSerializer
 from auth_server.utils.jwt import access_required
 from auth_server.utils.view_utils import json_or_400
@@ -54,12 +54,11 @@ class UserRolesView(ManyManySubResource):
     ]
     decorators = [access_required(resource_names)]
 
-    base_table = 'users'
-    relation_table = 'user_roles'
-    relation_model = UserRoles
-    relation_key_to_base = 'user_id'
-    relation_key_to_sub = 'role_id'
-    sub_table = 'roles'
+    base_model = Users
+    relation_table = user_roles
+    relation_field_to_base = 'user_id'
+    relation_field_to_sub = 'role_id'
+    sub_model = Roles
     fields = ['id', 'name', 'description']
 
     serializer = RoleSerializer
@@ -73,12 +72,11 @@ class RoleUsersView(ManyManySubResource):
     ]
     decorators = [access_required(resource_names)]
 
-    base_table = 'roles'
-    relation_table = 'user_roles'
-    relation_model = UserRoles
-    relation_key_to_base = 'role_id'
-    relation_key_to_sub = 'user_id'
-    sub_table = 'users'
+    base_model = Roles
+    relation_table = user_roles
+    relation_field_to_base = 'role_id'
+    relation_field_to_sub = 'user_id'
+    sub_model = Users
     fields = ['id', 'username']
 
     serializer = UserSerializer
@@ -92,12 +90,11 @@ class RoleResourcesView(ManyManySubResource):
     ]
     decorators = [access_required(resource_names)]
 
-    base_table = 'roles'
-    relation_table = 'resource_roles'
-    relation_model = ResourceRoles
-    relation_key_to_base = 'role_id'
-    relation_key_to_sub = 'resource_id'
-    sub_table = 'resources'
+    base_model = Roles
+    relation_table = resource_roles
+    relation_field_to_base = 'role_id'
+    relation_field_to_sub = 'resource_id'
+    sub_model = Resources
     fields = ['id', 'path']
 
     serializer = ResourceSerializer
@@ -111,12 +108,11 @@ class ResourceRolesView(ManyManySubResource):
     ]
     decorators = [access_required(resource_names)]
 
-    base_table = 'resources'
-    relation_table = 'resource_roles'
-    relation_model = ResourceRoles
-    relation_key_to_base = 'resource_id'
-    relation_key_to_sub = 'role_id'
-    sub_table = 'roles'
+    base_model = Resources
+    relation_table = resource_roles
+    relation_field_to_base = 'resource_id'
+    relation_field_to_sub = 'role_id'
+    sub_model = Roles
     fields = ['id', 'name', 'description']
 
     serializer = ResourceSerializer
