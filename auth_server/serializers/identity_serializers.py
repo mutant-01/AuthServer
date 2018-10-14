@@ -12,6 +12,7 @@ class UserSerializer(Schema):
     password = fields.Str(validate=validate.Length(max=256, min=8), load_only=True, required=True)
     avatar = fields.Str(validate=validate.Length(max=10*1024))
     display_name = fields.Str(validate=validate.Length(max=128))
+    service_name = fields.Str(validate=validate.Length(max=128))
 
     @post_load
     def hash_password(self, data):

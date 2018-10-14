@@ -597,6 +597,7 @@ components:
         id: {format: int32, readOnly: true, type: integer}
         avatar: {maxLength: 10240, type: string}
         username: {maxLength: 128, minLength: 1, type: string}
+        service_name: {maxLength: 128, type: string}
         password: {maxLength: 256, minLength: 8, type: string, writeOnly: true}
       required: [password, username]
       type: object

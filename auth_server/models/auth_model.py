@@ -30,6 +30,7 @@ class Users(db_wrapper.Model, CrudModel):
     password = db_wrapper.Column(db_wrapper.String(256), nullable=False)
     display_name = db_wrapper.Column(db_wrapper.String(128), nullable=True)
     avatar = db_wrapper.Column(db_wrapper.Text, nullable=True)
+    service_name = db_wrapper.Column(db_wrapper.String(128), nullable=True)
     roles = relationship(
         "Roles",
         secondary="user_roles",
