@@ -37,6 +37,9 @@ class Users(db_wrapper.Model, CrudModel):
         back_populates="users",
     )
 
+    def __str__(self):
+        return "user '{}', with id {}".format(self.username, self.id)
+
     @classmethod
     def get_info_by_id(cls, id):
         user = db_wrapper.session.execute(
@@ -69,6 +72,9 @@ class Roles(db_wrapper.Model, CrudModel):
         back_populates="roles"
     )
 
+    def __str__(self):
+        return "role '{}', with id {}, description: '{}'".format(self.name, self.id, self.description)
+
 
 role_name_hash_index = db_wrapper.Index("role_name_hash_index", Roles.name, postgresql_using='hash')
 
@@ -85,6 +91,9 @@ class Resources(db_wrapper.Model, CrudModel):
         secondary="resource_roles",
         back_populates="resources"
     )
+
+    def __str__(self):
+        return "resource '{}', with id {}".format(self.path, self.id)
 
 
 resource_path_hash_index = db_wrapper.Index("resource_path_hash_index", Resources.path, postgresql_using='hash')
@@ -249,3 +258,22 @@ def delete_from_relation_table(
         return True
     else:
         return False
+
+
+def get_resources_by_user_pass(username: str, password: str):
+    """
+
+    :param username: the username in query criteria.
+    :param password: the password in query criteria.
+    :return: set of Resource paths the user has access to.
+    """
+    results = db_wrapper.session.execute(
+        "select resources.path from users inner join user_roles on (users.id=user_roles.user_id) " 
+        "inner join resource_roles on (user_roles.role_id=resource_roles.role_id) " 
+        "inner join resources on (resources.id=resource_roles.resource_id) "
+        "where users.username='{username}' and password='{password}'".format(username=username, password=password)
+    )
+    db_wrapper.session.commit()
+    if not results:
+        return []
+    return {r[0] for r in results}

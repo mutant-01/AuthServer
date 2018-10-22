@@ -75,3 +75,5 @@ mind the database name in the URI, the database should be created before startin
 1. before starting the server one should create the database in postgres instance.
 2. run the init.py script with admin username and password.
 3. set the environment variables
+### flask admin panel
+an administrative panel is available under '/<URL_PREFIX>/admin/'

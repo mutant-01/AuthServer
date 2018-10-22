@@ -9,11 +9,14 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from auth_server import config
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from flask_admin import Admin
 
 # lazy extensions
 db_wrapper = SQLAlchemy()
 
 jwt = JWTManager()
+
+admin = None
 
 
 def create_app(extra_configs: dict=None) -> Flask:
@@ -85,6 +88,12 @@ def create_app(extra_configs: dict=None) -> Flask:
     from auth_server.views.identity_views import ResourceRolesView
     register_methodview(app, ResourceRolesView, "roles", url_prefix='/resources/<string:base_id>')
 
+    # flask admin
+    global admin
+    from auth_server.views.flask_admin_views import IndexView
+    admin = Admin(name='AuthServer', template_mode='bootstrap3', app=app, index_view=IndexView())
+    from auth_server.views.flask_admin_views import register
+    register()
     return app
 
 
